@@ -39,12 +39,6 @@ function FilterPeople() {
       gender:e.target.value
     });
   };
-//  const  onChangeGender = (e: { target: { value: any; }; }) => {
-//     console.log('radio checked', e.target.value);
-//     setValue({
-//       value: e.target.value,
-//     });
-//   };
 
   const onChangeAge = (value: number ) => {
 

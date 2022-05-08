@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row, Button, Drawer } from 'antd';
 import { createUseStyles } from 'react-jss';
+import { gql,useLazyQuery } from '@apollo/client';
+
 const useStyles = createUseStyles({
 
   person: {
@@ -28,16 +30,17 @@ const useStyles = createUseStyles({
   },
   nameNumberCover: {
     width: '80%',
+  },
+  homeWorld:{
+    border: '1.5px solid #04b67d',
+    borderRadius: '10px'
+    
   }
 
 })
 
 
 function People(props: { data: any; }) {
-
-
-
-
 
   const classes = useStyles();
   const [people, setPeople] = useState([]);
@@ -93,28 +96,63 @@ function People(props: { data: any; }) {
 
 export default People;
 
+
+const GET_HOME_WORLD = gql`
+query GetHomeWorld($url: String) {
+  getHomeWorld(url: $url) {
+    name
+    rotation_period
+    orbital_period
+    diameter
+    gravity
+    climate
+    population
+    terrain
+  }
+}
+`
 const PersonInfo = (props: { visible: boolean; setVisible: any ,person:any}) => {
   const { visible, setVisible,person } = props;
+  const [homeWorld, setHomeWorld] = useState({});
+  const classes = useStyles();
+  const [getHomeWorld,{loading, error, data}] = useLazyQuery (GET_HOME_WORLD);
+
   const onClose = () => {
     setVisible(false);
   };
 
+  useEffect(() => {
+    if(person){
+      if(person.homeworld)
+      getHomeWorld({variables:{
+        url:person.homeworld
+      }})
+      setHomeWorld(person.homeworld);
+    }
+      
+  },[person]);
+
+  if (loading) return <h1>Submitting...</h1>;
+  if (error) return <h1>Submission error! {error.message}</h1>;
   return (
     <>
-      {/* <Button type="primary" onClick={showDrawer}>
-        Open
-      </Button> */}
-      <Drawer title="Basic Drawer" placement="right" onClose={onClose} visible={visible}>
+
+      <Drawer title="Cast Information" placement="right" onClose={onClose} visible={visible}>
         {Object.keys(person).map((key: string, index: number) => {
           return<>{            
             (key !== 'homeworld' && key !=='__typename') &&
           <div>
               <span>{key} </span>: <span>{person[key]}</span>
           </div>}
+         
           </>
         }
           )
         }
+
+<div className={`${classes.homeWorld} p-3 mt-3`}>
+            Home world
+          </div>
        
       </Drawer>
     </>
