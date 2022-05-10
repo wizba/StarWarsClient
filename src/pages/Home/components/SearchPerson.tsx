@@ -10,7 +10,8 @@ const useStyles = createUseStyles({
   },
   })
   const { Search } = Input;
-function SearchPerson() {
+function SearchPerson(props: { setIsClicked: any; }) {
+  const {setIsClicked} = props;
     const classes = useStyles();
     const {searchDto,setSearchDto} = useContext(ShareDataContext);
     const onChange = (e:ChangeEvent<HTMLInputElement>) => {

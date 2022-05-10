@@ -5,4 +5,5 @@ export interface Person{
     height?:number;
     gender?:string;
     openText?:string;
+    url?:string
 }

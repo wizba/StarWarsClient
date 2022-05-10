@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react'
 import { Col, Row, Button, Drawer } from 'antd';
 import { createUseStyles } from 'react-jss';
 import { gql,useLazyQuery } from '@apollo/client';
-
+import { TraceSpinner } from "react-spinners-kit";
 const useStyles = createUseStyles({
 
   person: {
     boxShadow: '0 .125rem .25rem rgba(0,0,0,.075)',
     borderRadius: '0.25rem',
-    backgroundColor: 'white',
+    backgroundColor: 'rgb(15, 23, 36)',
     padding: '10px',
     display: 'flex',
     alignItems: 'center',
+    color:'rgb(146, 171, 207)'
   },
   person_number: {
     fontSize: '14px',
@@ -35,8 +36,17 @@ const useStyles = createUseStyles({
     border: '1.5px solid #04b67d',
     borderRadius: '10px'
     
-  }
+  },
 
+ spinner:{
+   width: '100vw',
+   height: '100vh',
+   position: 'fixed',
+   backgroundColor: '#000000e8',
+   top: '0',
+    left: '0',
+    zIndex: '9999'
+ }
 })
 
 
@@ -63,8 +73,9 @@ function People(props: { data: any; }) {
 
 
 
-  return (
-    <Row gutter={16} className={`pb-5`}>
+  return (<>
+  
+  <Row gutter={16} className={`pb-5`}>
 
       {
 
@@ -91,6 +102,8 @@ function People(props: { data: any; }) {
 
       <PersonInfo visible={visible} setVisible={setVisible} person={person}/>
     </Row>
+  </>
+    
   )
 }
 
@@ -111,9 +124,32 @@ query GetHomeWorld($url: String) {
   }
 }
 `
+interface HOME_W{
+  name: string
+  rotation_period: string
+  orbital_period: string
+  diameter: string
+  gravity: string
+  climate: string
+  population: string
+  terrain: string
+  __typename: string
+  
+}
 const PersonInfo = (props: { visible: boolean; setVisible: any ,person:any}) => {
   const { visible, setVisible,person } = props;
-  const [homeWorld, setHomeWorld] = useState({});
+  const [homeWorld, setHomeWorld] = useState<HOME_W>({
+    name: '',
+    rotation_period: '',
+    orbital_period: '',
+    diameter: '',
+    gravity: '',
+    climate: '',
+    population: '',
+    terrain: '',
+    __typename: '',
+
+  });
   const classes = useStyles();
   const [getHomeWorld,{loading, error, data}] = useLazyQuery (GET_HOME_WORLD);
 
@@ -123,16 +159,37 @@ const PersonInfo = (props: { visible: boolean; setVisible: any ,person:any}) => 
 
   useEffect(() => {
     if(person){
-      if(person.homeworld)
-      getHomeWorld({variables:{
-        url:person.homeworld
-      }})
-      setHomeWorld(person.homeworld);
-    }
+      if(person.homeworld){
+        getHomeWorld({variables:{
+          url:person.homeworld
+        }})
       
+      }
+      
+    }
   },[person]);
 
-  if (loading) return <h1>Submitting...</h1>;
+
+  useEffect(()=>{
+    console.log(data);
+    if(data){
+     
+      setHomeWorld(data.getHomeWorld);
+    }
+  },[data])
+
+  if (loading) return (<div className={`${classes.spinner} d-flex justify-content-center align-items-center`}>
+ <div>
+   <div className='d-flex justify-content-center '>
+   <TraceSpinner size={30}/>
+   </div>
+ 
+  <div className='d-flex justify-content-center ' style={{color:"white"}}>
+    loading ...
+  </div>
+ </div>
+ 
+</div>);
   if (error) return <h1>Submission error! {error.message}</h1>;
   return (
     <>
@@ -142,7 +199,7 @@ const PersonInfo = (props: { visible: boolean; setVisible: any ,person:any}) => 
           return<>{            
             (key !== 'homeworld' && key !=='__typename') &&
           <div>
-              <span>{key} </span>: <span>{person[key]}</span>
+              <span><b>{key}</b> </span>: <span>{person[key]}</span>
           </div>}
          
           </>
@@ -151,7 +208,29 @@ const PersonInfo = (props: { visible: boolean; setVisible: any ,person:any}) => 
         }
 
 <div className={`${classes.homeWorld} p-3 mt-3`}>
-            Home world
+            <span>Home world</span>
+            {
+             
+              <ul>
+                {
+                  
+                  Object.keys(homeWorld).map((info:string)=>{
+                    
+                    return(<>{info !== '__typename' &&
+                      <li key={info}>
+                      <span><b>{info}</b> </span><span>{homeWorld[info as keyof typeof homeWorld]}</span>
+                    
+                     </li>}
+                     </>
+                    )
+                    
+                  
+                   
+                    } )
+                }
+               
+              </ul>
+            }
           </div>
        
       </Drawer>

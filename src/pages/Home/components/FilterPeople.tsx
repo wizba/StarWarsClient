@@ -14,7 +14,8 @@ const useStyles = createUseStyles({
   person:{
     boxShadow: '0 .125rem .25rem rgba(0,0,0,.075)',
     borderRadius: '0.25rem',
-    backgroundColor:'white',
+    backgroundColor: 'rgb(74 93 123)',
+    color:'rgb(0, 0, 0)',
     padding:'10px',
     width:'100%',
     minHeight:'100px',
@@ -25,9 +26,9 @@ const useStyles = createUseStyles({
 
 })
 
-function FilterPeople() {
+function FilterPeople(props: { setIsClicked:React.Dispatch<React.SetStateAction<any>>,setReset:React.Dispatch<React.SetStateAction<any>> }) {
   const classes = useStyles();
-
+  const {setIsClicked,setReset} = props;
   const {searchDto,setSearchDto} = useContext(ShareDataContext);
   const [radio, setRadioValue] = useState('all');
 
@@ -55,39 +56,52 @@ function FilterPeople() {
   }
 
   return (
-    <div className={`${classes.person} d-flex justify-content-center`}>
+    <div className={`${classes.person}`}>
     
     <Row gutter={16}  className={`${classes.search}`}>
-        <Col xs={24} sm={24} md={12} lg={6} span={6} className='mt-2'>
-          <div>Age</div>
-          <Slider defaultValue={0}    tooltipPlacement={'bottom'} onChange={onChangeAge}/>
-        </Col>
+        
         <Col xs={24} sm={24} md={12} lg={6} span={6} className='mt-2'>
           <div>Mass</div>
-          <Slider defaultValue={0}   tooltipPlacement={'bottom'} onChange={onChangeMass}/>
+          <Slider defaultValue={0}  max={1000} tooltipPlacement={'bottom'} onChange={onChangeMass}/>
         </Col>
 
         <Col xs={24} sm={24} md={12} lg={6} span={6} className='mt-2'>
           <div>Gender</div>
-          <Radio.Group onChange={onChange}>
+          <Radio.Group onChange={onChange} className ="d-flex">
 
-          <Radio value={''} >All</Radio>
-        <Radio value={'male'} >Male</Radio>
-        <Radio value={'female'}>Female</Radio>
-        <Radio value={'other'}>Unknown</Radio>
+          <Radio value={''} ><span color='white'>All</span></Radio>
+        <Radio value={'male'} ><span color='white'>Male</span></Radio>
+        <Radio value={'female'}><span color='white'>Female</span></Radio>
+        <Radio value={'other'}><span color='white'>Unknown</span></Radio>
       </Radio.Group>
         </Col>
 
         <Col xs={24} sm={24} md={24} lg={24}  className='mt-3'>
          
         <Button
-            type="primary"
-            icon={<FilterOutlined />}
+           shape="round"
+           type="primary" ghost
+           style={{borderColor:' #1a3147',color:'#1a3147'}}
             size="small"
+            onClick={()=>{
+              setIsClicked(true);
+            }}
           >
             Filter
           </Button>
-            
+          <Button
+          className='mx-3'
+          shape="round"
+          type="primary" ghost
+          style={{borderColor:' #1a3147',color:'#1a3147'}}
+            size="small"
+            onClick={()=>{
+              
+              window.location.reload();
+            }}
+          >
+            Reset
+          </Button>
         </Col>
     </Row>
   

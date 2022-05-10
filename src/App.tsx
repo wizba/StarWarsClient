@@ -1,8 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import 'antd/dist/antd.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Input } from 'antd';
-import {createUseStyles} from 'react-jss'
+import './App.css';
 import HomePage from './pages/Home/HomePage';
 
 import {
