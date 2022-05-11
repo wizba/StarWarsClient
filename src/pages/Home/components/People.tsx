@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row, Button, Drawer } from 'antd';
 import { createUseStyles } from 'react-jss';
-import { gql,useLazyQuery } from '@apollo/client';
+import { gql, useLazyQuery } from '@apollo/client';
 import { TraceSpinner } from "react-spinners-kit";
 const useStyles = createUseStyles({
 
@@ -12,7 +12,7 @@ const useStyles = createUseStyles({
     padding: '10px',
     display: 'flex',
     alignItems: 'center',
-    color:'rgb(146, 171, 207)'
+    color: 'rgb(146, 171, 207)'
   },
   person_number: {
     fontSize: '14px',
@@ -32,21 +32,21 @@ const useStyles = createUseStyles({
   nameNumberCover: {
     width: '80%',
   },
-  homeWorld:{
+  homeWorld: {
     border: '1.5px solid #04b67d',
     borderRadius: '10px'
-    
+
   },
 
- spinner:{
-   width: '100vw',
-   height: '100vh',
-   position: 'fixed',
-   backgroundColor: '#000000e8',
-   top: '0',
+  spinner: {
+    width: '100vw',
+    height: '100vh',
+    position: 'fixed',
+    backgroundColor: '#000000e8',
+    top: '0',
     left: '0',
     zIndex: '9999'
- }
+  }
 })
 
 
@@ -74,8 +74,8 @@ function People(props: { data: any; }) {
 
 
   return (<>
-  
-  <Row gutter={16} className={`pb-5`}>
+
+    <Row gutter={16} className={`pb-5`}>
 
       {
 
@@ -83,14 +83,14 @@ function People(props: { data: any; }) {
           <Col xs={24} sm={24} md={12} lg={6} span={6} className='mt-4'>
             <div className={`${classes.person}`}>
               <div className={`d-flex ${classes.nameNumberCover}`}>
-                <div className={`${classes.person_number}`}>{index+1}</div>
+                <div className={`${classes.person_number}`}>{index + 1}</div>
                 <div className='mx-2'>{person.name}</div>
               </div>
 
-              <Button type="primary" size="small" ghost className={`${classes.view_button}`} onClick={()=>{
+              <Button type="primary" size="small" ghost className={`${classes.view_button}`} onClick={() => {
                 setPerson(person);
                 showDrawer()
-                }}>
+              }}>
                 View
               </Button>
             </div>
@@ -100,10 +100,10 @@ function People(props: { data: any; }) {
       }
 
 
-      <PersonInfo visible={visible} setVisible={setVisible} person={person}/>
+      <PersonInfo visible={visible} setVisible={setVisible} person={person} />
     </Row>
   </>
-    
+
   )
 }
 
@@ -124,7 +124,7 @@ query GetHomeWorld($url: String) {
   }
 }
 `
-interface HOME_W{
+interface HOME_W {
   name: string
   rotation_period: string
   orbital_period: string
@@ -134,10 +134,10 @@ interface HOME_W{
   population: string
   terrain: string
   __typename: string
-  
+
 }
-const PersonInfo = (props: { visible: boolean; setVisible: any ,person:any}) => {
-  const { visible, setVisible,person } = props;
+const PersonInfo = (props: { visible: boolean; setVisible: any, person: any }) => {
+  const { visible, setVisible, person } = props;
   const [homeWorld, setHomeWorld] = useState<HOME_W>({
     name: '',
     rotation_period: '',
@@ -151,87 +151,102 @@ const PersonInfo = (props: { visible: boolean; setVisible: any ,person:any}) => 
 
   });
   const classes = useStyles();
-  const [getHomeWorld,{loading, error, data}] = useLazyQuery (GET_HOME_WORLD);
+  const [getHomeWorld, { loading, error, data }] = useLazyQuery(GET_HOME_WORLD);
 
   const onClose = () => {
     setVisible(false);
   };
 
   useEffect(() => {
-    if(person){
-      if(person.homeworld){
-        getHomeWorld({variables:{
-          url:person.homeworld
-        }})
-      
+    if (person) {
+      if (person.homeworld) {
+        getHomeWorld({
+          variables: {
+            url: person.homeworld
+          }
+        })
+
       }
-      
+
     }
-  },[person]);
+  }, [person]);
 
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(data);
-    if(data){
-     
+    if (data) {
+
       setHomeWorld(data.getHomeWorld);
     }
-  },[data])
+  }, [data])
 
   if (loading) return (<div className={`${classes.spinner} d-flex justify-content-center align-items-center`}>
- <div>
-   <div className='d-flex justify-content-center '>
-   <TraceSpinner size={30}/>
-   </div>
- 
-  <div className='d-flex justify-content-center ' style={{color:"white"}}>
-    loading ...
-  </div>
- </div>
- 
-</div>);
+    <div>
+      <div className='d-flex justify-content-center '>
+        <TraceSpinner size={30} />
+      </div>
+
+      <div className='d-flex justify-content-center ' style={{ color: "white" }}>
+        loading ...
+      </div>
+    </div>
+
+  </div>);
   if (error) return <h1>Submission error! {error.message}</h1>;
+
+
+ const myStyle = {
+  height:"90vh",
+  background:"rgb(15, 23, 36)",
+  margin:"-25px -25px -336px",
+  padding:"25px",
+  color:"#415268"
+ }
+
   return (
     <>
 
       <Drawer title="Cast Information" placement="right" onClose={onClose} visible={visible}>
+        <div style={myStyle}>
         {Object.keys(person).map((key: string, index: number) => {
-          return<>{            
-            (key !== 'homeworld' && key !=='__typename') &&
-          <div>
+          return <>{
+            (key !== 'homeworld' && key !== '__typename') &&
+            <div>
               <span><b>{key}</b> </span>: <span>{person[key]}</span>
-          </div>}
-         
+            </div>}
+
           </>
         }
-          )
+        )
         }
 
-<div className={`${classes.homeWorld} p-3 mt-3`}>
-            <span>Home world</span>
-            {
-             
-              <ul>
-                {
-                  
-                  Object.keys(homeWorld).map((info:string)=>{
-                    
-                    return(<>{info !== '__typename' &&
-                      <li key={info}>
+        <div className={`${classes.homeWorld} p-3 mt-3`}>
+          <span>Home world</span>
+          {
+
+            <ul>
+              {
+
+                Object.keys(homeWorld).map((info: string) => {
+
+                  return (<>{info !== '__typename' &&
+                    <li key={info}>
                       <span><b>{info}</b> </span><span>{homeWorld[info as keyof typeof homeWorld]}</span>
-                    
-                     </li>}
-                     </>
-                    )
-                    
-                  
-                   
-                    } )
-                }
-               
-              </ul>
-            }
-          </div>
+
+                    </li>}
+                  </>
+                  )
+
+
+
+                })
+              }
+
+            </ul>
+          }
+        </div>
+
+        </div>
        
       </Drawer>
     </>

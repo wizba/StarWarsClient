@@ -11,9 +11,10 @@ import {
   useQuery,
   gql
 } from "@apollo/client";
+const URL = "https://y0e7u0o2zf.execute-api.us-east-1.amazonaws.com/dev/graphql";
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3000/dev/graphql',
+  uri: URL,
   cache: new InMemoryCache()
 });
 

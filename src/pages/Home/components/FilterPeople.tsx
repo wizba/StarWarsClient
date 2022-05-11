@@ -24,9 +24,15 @@ const useStyles = createUseStyles({
     width: '434px'
   },
 
-})
+});
 
-function FilterPeople(props: { setIsClicked:React.Dispatch<React.SetStateAction<any>>,setReset:React.Dispatch<React.SetStateAction<any>> }) {
+interface FilterPeopleProps {
+  setIsClicked:React.Dispatch<React.SetStateAction<any>>,
+  setReset:React.Dispatch<React.SetStateAction<any>>
+}
+
+
+function FilterPeople(props: FilterPeopleProps) {
   const classes = useStyles();
   const {setIsClicked,setReset} = props;
   const {searchDto,setSearchDto} = useContext(ShareDataContext);

@@ -165,7 +165,15 @@ function HomePage() {
       </Row>
 
       <People data={data}/>
-      <Pagination defaultCurrent={page} total={82} onChange ={onChangePage}  />
+      <Pagination
+      style={{
+        padding: '10px',
+        background: '#4a5d7b',
+        borderRadius: '0.25rem'
+      }}
+       defaultCurrent={page}
+        total={82} 
+        onChange ={onChangePage}  />
     </Container>
     </ShareDataContext.Provider>
    
